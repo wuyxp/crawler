@@ -24,11 +24,6 @@ var getPrice = function(){
   });
 };
 
-var getPanelList = function(){
-  driver.findElement(By.className('panel')).then(function(){
-
-  })
-}
 var Instance = {
   images : [],
   resourceClass: [],
@@ -53,35 +48,40 @@ driver.get('https://www.qingcloud.com/pricing/plan').then(() => {
     });
 
     //主机性能
-    driver.findElement(By.className('resource-class')).then(() => {
-      driver.findElements(By.className('class-item')).then((elm) => {
-        return elm.getText();
-      }).then((label) => {
-        Instance.resourceClass.push(label);
+    driver.findElements(By.xpath('//div[@class="cpu-memory"]/ul[@class="resource-class"]/li')).then((elms) => {
+      elms.forEach((elm) => {
+        elm.getText().then((label) => {
+          console.log(label);
+          Instance.resourceClass.push(label);
+        });
       });
     });
 
     //主机核数
-    driver.findElement(By.className('cpu')).then((elm) => {
-      return elm.getText();
-    }).then((label) => {
-      console.log(label);
-      Instance.cpu = label.split(/\s+/);
+    driver.findElements(By.xpath('//div[@class="cpu-memory"]/ul[@class="cpu"]/li')).then((elms) => {
+      elms.forEach((elm) => {
+        elm.getText().then((label) => {
+          console.log(label);
+          Instance.cpu.push(label);
+        });
+      });
     });
 
     //主机内存
-    driver.findElement(By.className('memory')).then((elm) => {
-      return elm.getText();
-    }).then((label) => {
-      console.log(label);
-      Instance.memory = label.split(/\s+/);
+    driver.findElements(By.xpath('//div[@class="cpu-memory"]/ul[@class="memory"]/li')).then((elms) => {
+      elms.forEach((elm) => {
+        elm.getText().then((label) => {
+          console.log(label);
+          Instance.memory.push(label);
+        });
+      });
     });
-
   });
   return result.getText();
 }).then((text) => {
   //console.log(text);
   console.log(Instance);
+  
   driver.quit();
   service.stop();
 });
