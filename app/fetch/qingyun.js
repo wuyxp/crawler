@@ -1,20 +1,15 @@
-//var db = require('../db/qingyun');
-var mongoose = require('mongoose');
-//数据库连接类
-var mongodb = mongoose.connect('mongodb://127.0.0.1:27017/crawler');//；连接数据库
-var Schema = mongoose.Schema;   //  创建模型
-var qingyunScheMa = new Schema({
-  name: String,
-  password: String
-}); //  定义了一个新的模型，但是此模式还未和users集合有关联
-var mongooseModel = mongodb.model('qingyun_host', qingyunScheMa); //  与users集合关联
+var events = require('events');
+var emitter = new events.EventEmitter();
 
+var db = require('../db/qingyun');
+var mongooseModel = db.mongodb.model('qingyun_instance', db.qingyunScheMaInstance); //  与users集合关联
 
 //webdriver生命类
 var webdriver = require('selenium-webdriver'),
   chrome = require('selenium-webdriver/chrome'),
   By = webdriver.By,
   until = webdriver.until;
+
 var path = require('chromedriver').path;
 
 var service = new chrome.ServiceBuilder(path).build();
@@ -86,13 +81,27 @@ driver.get('https://www.qingcloud.com/pricing/plan').then(() => {
   });
   return result.getText();
 }).then(() => {
+
+  var date = new Date();
+  var allInstanceLength = Instance.images.length * Instance.resourceClass.length * Instance.cpu.length * Instance.memory.length;
+  var instanceNum = 0;
+
   var InstanceConfig = {
     images:'',
     resourceClass:'',
     cpu:'',
     memory:'',
-    price:''
+    price:'',
+    date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()
   };
+
+  //注册监听器,Instance爬完之后的函数
+  emitter.on('instanceAllPrice',() => {
+    db.mongodb.close();
+    driver.quit();
+    service.stop();
+  });
+
   Instance.images.forEach((image) => {
     driver.findElement(By.linkText(image)).then((elm) => {
       elm.click();
@@ -124,19 +133,19 @@ driver.get('https://www.qingcloud.com/pricing/plan').then(() => {
                 if(err){
                   console.log(err);
                 }else{
-                  console.log('插入一条成功');
+                  console.log('插入第'+instanceNum+'条成功,共有'+allInstanceLength+'条');
+                  instanceNum++;
+                  if(instanceNum >= allInstanceLength){
+                    emitter.emit('instanceAllPrice');
+                  }
                 }
-              })
-              //var str = '配置为:'+InstanceConfig+', === 价格为:---->'+price + '\n';
-              //console.log(str);
-              //db.write(str);
+              });
             })
           });
         })
       })
     });
   });
-  //driver.quit();
-  //service.stop();
+
 });
 console.log(Instance);

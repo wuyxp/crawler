@@ -5,5 +5,10 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
+router.get('/qingyun/instance', function(req, res, next) {
+  res.render('index', { title: '青云-instance价格表' });
+});
+
+
 
 module.exports = router;
