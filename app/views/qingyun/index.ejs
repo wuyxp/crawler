@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel='stylesheet' href='/lib/bootstrap/dist/css/bootstrap.css' />
+        <style>
+            .panel > a.btn.btn-lg{
+                margin :5px
+            }
+        </style>
+    </head>
+    <body>
+        <div class="panel">
+            <h1><%= title %></h1>
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>主机</h3>
+                    <div class="panel" id="instance_links">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h3>硬盘</h3>
+                    <div class="panel" id="volume_links">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h3>带宽</h3>
+                    <div class="panel" id="bandwidth_links">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script src="/lib/jquery/dist/jquery.min.js"></script>
+        <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="/javascripts/qingyun.js"></script>
+    </body>
+</html>

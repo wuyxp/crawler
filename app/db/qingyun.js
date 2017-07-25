@@ -1,6 +1,4 @@
 var mongoose = require('mongoose');
-//数据库连接类
-var mongodb = mongoose.createConnection('mongodb://127.0.0.1:27017/crawler');//；连接数据库
 
 //  定义了一个主机的模型
 var qingyunScheMaInstance  = new mongoose.Schema({
@@ -8,10 +6,34 @@ var qingyunScheMaInstance  = new mongoose.Schema({
   resourceClass: String,
   cpu: String,
   memory: String,
+  make: String,
   price: String,
-  date: String
+  change: String,
+  date: String,
 }); 
-
+var qingyunVolume = new mongoose.Schema({
+  type: String,
+  size: String,
+  make: String,
+  price: String,
+  change: String,
+  date: String,
+});
+var qingyunBandWidth = new mongoose.Schema({
+  size: String,
+  make: String,
+  price: String,
+  change: String,
+  date: String,
+});
+var qingyun = new mongoose.Schema({
+  make: String,
+  change: String,
+  date:String,
+});
 module.exports = {
-  mongodb ,qingyunScheMaInstance
+  qingyunScheMaInstance,
+  qingyunVolume,
+  qingyunBandWidth,
+  qingyun
 }
